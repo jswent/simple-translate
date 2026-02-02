@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen, UnlistenFn } from "@tauri-apps/api/event";
 import type { TranslationRequest, TranslationResponse, Settings } from "../types";
@@ -7,41 +7,50 @@ export function useTranslation() {
   const [translating, setTranslating] = useState(false);
   const [streamingText, setStreamingText] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const listenersRef = useRef<UnlistenFn[]>([]);
 
   useEffect(() => {
-    let unlistenToken: UnlistenFn | null = null;
-    let unlistenComplete: UnlistenFn | null = null;
-    let unlistenError: UnlistenFn | null = null;
+    let mounted = true;
 
     const setupListeners = async () => {
-      // Listen for streaming tokens
-      unlistenToken = await listen<string>("translation_token", (event) => {
-        setStreamingText((prev) => prev + event.payload);
+      const unlistenToken = await listen<string>("translation_token", (event) => {
+        if (mounted) {
+          setStreamingText((prev) => prev + event.payload);
+        }
       });
 
-      // Listen for completion
-      unlistenComplete = await listen<TranslationResponse>(
+      const unlistenComplete = await listen<TranslationResponse>(
         "translation_complete",
         (event) => {
-          console.log("[useTranslation] Complete:", event.payload);
-          setTranslating(false);
+          if (mounted) {
+            setTranslating(false);
+          }
         }
       );
 
-      // Listen for errors
-      unlistenError = await listen<string>("translation_error", (event) => {
-        console.error("[useTranslation] Error:", event.payload);
-        setError(event.payload);
-        setTranslating(false);
+      const unlistenError = await listen<string>("translation_error", (event) => {
+        if (mounted) {
+          setError(event.payload);
+          setTranslating(false);
+        }
       });
+
+      if (mounted) {
+        listenersRef.current = [unlistenToken, unlistenComplete, unlistenError];
+      } else {
+        // Component unmounted before setup completed, cleanup immediately
+        unlistenToken();
+        unlistenComplete();
+        unlistenError();
+      }
     };
 
     setupListeners();
 
     return () => {
-      unlistenToken?.();
-      unlistenComplete?.();
-      unlistenError?.();
+      mounted = false;
+      listenersRef.current.forEach((unlisten) => unlisten());
+      listenersRef.current = [];
     };
   }, []);
 
