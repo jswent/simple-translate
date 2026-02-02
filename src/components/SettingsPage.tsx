@@ -16,6 +16,21 @@ export function SettingsPage({ settings, onSave }: SettingsPageProps) {
     setLocalSettings(settings);
   }, [settings]);
 
+  // Check if API key or system prompt has unsaved changes
+  const hasUnsavedChanges =
+    localSettings.api_key !== settings.api_key ||
+    localSettings.system_prompt !== settings.system_prompt;
+
+  // Auto-save dropdown changes
+  const handleDropdownChange = async (newSettings: Settings) => {
+    setLocalSettings(newSettings);
+    try {
+      await onSave(newSettings);
+    } catch (e) {
+      setMessage({ type: "error", text: String(e) });
+    }
+  };
+
   const handleSave = async () => {
     try {
       setSaving(true);
@@ -71,7 +86,7 @@ export function SettingsPage({ settings, onSave }: SettingsPageProps) {
           <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Model</label>
           <select
             value={localSettings.model}
-            onChange={(e) => setLocalSettings({ ...localSettings, model: e.target.value })}
+            onChange={(e) => handleDropdownChange({ ...localSettings, model: e.target.value })}
             className="px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-600
                        bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200
                        focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -93,7 +108,7 @@ export function SettingsPage({ settings, onSave }: SettingsPageProps) {
             <select
               value={localSettings.default_source_language}
               onChange={(e) =>
-                setLocalSettings({ ...localSettings, default_source_language: e.target.value })
+                handleDropdownChange({ ...localSettings, default_source_language: e.target.value })
               }
               className="px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-600
                          bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200
@@ -113,7 +128,7 @@ export function SettingsPage({ settings, onSave }: SettingsPageProps) {
             <select
               value={localSettings.default_target_language}
               onChange={(e) =>
-                setLocalSettings({ ...localSettings, default_target_language: e.target.value })
+                handleDropdownChange({ ...localSettings, default_target_language: e.target.value })
               }
               className="px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-600
                          bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200
@@ -152,15 +167,17 @@ export function SettingsPage({ settings, onSave }: SettingsPageProps) {
         </div>
       </div>
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="px-6 py-2.5 rounded-md bg-blue-600 text-white font-medium
-                   hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed
-                   transition-colors self-start mt-4"
-      >
-        {saving ? "Saving..." : "Save Settings"}
-      </button>
+      {hasUnsavedChanges && (
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="px-6 py-2.5 rounded-md bg-blue-600 text-white font-medium
+                     hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed
+                     transition-colors self-start mt-4"
+        >
+          {saving ? "Saving..." : "Save Settings"}
+        </button>
+      )}
     </div>
   );
 }
