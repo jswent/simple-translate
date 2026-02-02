@@ -95,9 +95,9 @@ export function TranslationPage({ settings }: TranslationPageProps) {
             value={sourceText}
             onChange={(e) => setSourceText(e.target.value)}
             placeholder="Enter text to translate..."
-            className="flex-1 p-3 rounded-md border border-zinc-300 dark:border-zinc-600
-                       bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200
-                       resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 p-3 rounded-md bg-white text-sm text-zinc-800 ring-1 ring-inset ring-zinc-300
+                       placeholder:text-zinc-400 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500
+                       dark:bg-zinc-800 dark:text-zinc-200 dark:ring-zinc-600 dark:placeholder:text-zinc-500"
           />
         </div>
         <div className="flex-1 flex flex-col">
@@ -105,9 +105,9 @@ export function TranslationPage({ settings }: TranslationPageProps) {
             value={translating ? streamingText : translatedText}
             readOnly
             placeholder="Translation will appear here..."
-            className="flex-1 p-3 rounded-md border border-zinc-300 dark:border-zinc-600
-                       bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200
-                       resize-none focus:outline-none"
+            className="flex-1 p-3 rounded-md bg-zinc-50 text-sm text-zinc-800 ring-1 ring-inset ring-zinc-300
+                       placeholder:text-zinc-400 resize-none focus:outline-none
+                       dark:bg-zinc-900 dark:text-zinc-200 dark:ring-zinc-600 dark:placeholder:text-zinc-500"
           />
         </div>
       </div>

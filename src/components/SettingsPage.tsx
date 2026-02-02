@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Settings } from "../types";
 import { LANGUAGES, AVAILABLE_MODELS, DEFAULT_SYSTEM_PROMPT } from "../constants";
+import { Dropdown } from "./Dropdown";
 
 interface SettingsPageProps {
   settings: Settings;
@@ -75,72 +76,38 @@ export function SettingsPage({ settings, onSave }: SettingsPageProps) {
             value={localSettings.api_key}
             onChange={(e) => setLocalSettings({ ...localSettings, api_key: e.target.value })}
             placeholder="sk-..."
-            className="px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-600
-                       bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200
-                       focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 rounded-md bg-white text-sm text-zinc-800 ring-1 ring-inset ring-zinc-300
+                       placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500
+                       dark:bg-zinc-800 dark:text-zinc-200 dark:ring-zinc-600 dark:placeholder:text-zinc-500"
           />
         </div>
 
         {/* Model Selection */}
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Model</label>
-          <select
-            value={localSettings.model}
-            onChange={(e) => handleDropdownChange({ ...localSettings, model: e.target.value })}
-            className="px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-600
-                       bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200
-                       focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {AVAILABLE_MODELS.map((model) => (
-              <option key={model.id} value={model.id}>
-                {model.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Dropdown
+          label="Model"
+          value={localSettings.model}
+          options={AVAILABLE_MODELS.map((m) => ({ value: m.id, label: m.name }))}
+          onChange={(value) => handleDropdownChange({ ...localSettings, model: value })}
+        />
 
         {/* Default Languages */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Default Source Language
-            </label>
-            <select
-              value={localSettings.default_source_language}
-              onChange={(e) =>
-                handleDropdownChange({ ...localSettings, default_source_language: e.target.value })
-              }
-              className="px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-600
-                         bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200
-                         focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {LANGUAGES.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Default Target Language
-            </label>
-            <select
-              value={localSettings.default_target_language}
-              onChange={(e) =>
-                handleDropdownChange({ ...localSettings, default_target_language: e.target.value })
-              }
-              className="px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-600
-                         bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200
-                         focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {LANGUAGES.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Dropdown
+            label="Default Source Language"
+            value={localSettings.default_source_language}
+            options={LANGUAGES.map((l) => ({ value: l.code, label: l.name }))}
+            onChange={(value) =>
+              handleDropdownChange({ ...localSettings, default_source_language: value })
+            }
+          />
+          <Dropdown
+            label="Default Target Language"
+            value={localSettings.default_target_language}
+            options={LANGUAGES.map((l) => ({ value: l.code, label: l.name }))}
+            onChange={(value) =>
+              handleDropdownChange({ ...localSettings, default_target_language: value })
+            }
+          />
         </div>
 
         {/* System Prompt */}
@@ -160,9 +127,9 @@ export function SettingsPage({ settings, onSave }: SettingsPageProps) {
             value={localSettings.system_prompt}
             onChange={(e) => setLocalSettings({ ...localSettings, system_prompt: e.target.value })}
             rows={5}
-            className="px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-600
-                       bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200
-                       resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 rounded-md bg-white text-sm text-zinc-800 ring-1 ring-inset ring-zinc-300
+                       resize-none focus:outline-none focus:ring-2 focus:ring-blue-500
+                       dark:bg-zinc-800 dark:text-zinc-200 dark:ring-zinc-600"
           />
         </div>
       </div>
