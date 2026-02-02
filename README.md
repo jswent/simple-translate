@@ -1,6 +1,16 @@
-# Simple Translate
-
+<h1>
+<p align="center">
+<img src="src-tauri/icons/icon.png" width="128" height="128" alt="Simple Translate Icon">
+<br>Simple Translate
+</p>
+</h1>
+<p align="center">
 A lightweight desktop translation app built with Tauri, React, and the OpenAI API.
+<br />
+<a href="https://github.com/jswent/simple-translate/releases/latest">Download</a>
+</p>
+
+![Preview](preview.png)
 
 ## Features
 
