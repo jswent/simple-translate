@@ -3,6 +3,7 @@ import { Header } from "./components/Header";
 import { TranslationPage } from "./components/TranslationPage";
 import { SettingsPage } from "./components/SettingsPage";
 import { useSettings } from "./hooks/useSettings";
+import { TranslationProvider } from "./context/TranslationContext";
 import "./App.css";
 
 type Page = "translate" | "settings";
@@ -20,16 +21,21 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-zinc-50 dark:bg-zinc-900">
-      <Header currentPage={currentPage} onNavigate={setCurrentPage} />
-      <main className="flex-1 overflow-hidden">
-        {currentPage === "translate" ? (
-          <TranslationPage settings={settings} />
-        ) : (
-          <SettingsPage settings={settings} onSave={saveSettings} />
-        )}
-      </main>
-    </div>
+    <TranslationProvider
+      defaultSourceLanguage={settings.default_source_language}
+      defaultTargetLanguage={settings.default_target_language}
+    >
+      <div className="flex flex-col h-screen bg-zinc-50 dark:bg-zinc-900">
+        <Header currentPage={currentPage} onNavigate={setCurrentPage} />
+        <main className="flex-1 overflow-hidden">
+          {currentPage === "translate" ? (
+            <TranslationPage settings={settings} />
+          ) : (
+            <SettingsPage settings={settings} onSave={saveSettings} />
+          )}
+        </main>
+      </div>
+    </TranslationProvider>
   );
 }
 

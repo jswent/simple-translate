@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { LanguageSelector } from "./LanguageSelector";
 import { useTranslation } from "../hooks/useTranslation";
+import { useTranslationContext } from "../context/TranslationContext";
 import type { Settings } from "../types";
 
 interface TranslationPageProps {
@@ -8,19 +9,29 @@ interface TranslationPageProps {
 }
 
 export function TranslationPage({ settings }: TranslationPageProps) {
-  const [sourceText, setSourceText] = useState("");
-  const [sourceLanguage, setSourceLanguage] = useState(settings.default_source_language);
-  const [targetLanguage, setTargetLanguage] = useState(settings.default_target_language);
+  const {
+    sourceText,
+    setSourceText,
+    sourceLanguage,
+    setSourceLanguage,
+    targetLanguage,
+    setTargetLanguage,
+    translatedText,
+    setTranslatedText,
+  } = useTranslationContext();
   const { translate, translating, streamingText, error, clearText } = useTranslation();
 
+  // Sync streaming text to context when it changes
   useEffect(() => {
-    setSourceLanguage(settings.default_source_language);
-    setTargetLanguage(settings.default_target_language);
-  }, [settings.default_source_language, settings.default_target_language]);
+    if (streamingText) {
+      setTranslatedText(streamingText);
+    }
+  }, [streamingText, setTranslatedText]);
 
   const handleTranslate = async () => {
     if (!sourceText.trim()) return;
-    clearText(); // Clear previous translation
+    clearText();
+    setTranslatedText("");
     await translate(
       {
         text: sourceText,
@@ -32,9 +43,13 @@ export function TranslationPage({ settings }: TranslationPageProps) {
   };
 
   const handleSwap = () => {
-    setSourceLanguage(targetLanguage);
-    setTargetLanguage(sourceLanguage);
-    setSourceText(streamingText);
+    const prevTarget = targetLanguage;
+    const prevSource = sourceLanguage;
+    const prevTranslated = translatedText;
+    setSourceLanguage(prevTarget);
+    setTargetLanguage(prevSource);
+    setSourceText(prevTranslated);
+    setTranslatedText("");
     clearText();
   };
 
@@ -87,7 +102,7 @@ export function TranslationPage({ settings }: TranslationPageProps) {
         </div>
         <div className="flex-1 flex flex-col">
           <textarea
-            value={streamingText}
+            value={translating ? streamingText : translatedText}
             readOnly
             placeholder="Translation will appear here..."
             className="flex-1 p-3 rounded-md border border-zinc-300 dark:border-zinc-600
