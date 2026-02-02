@@ -62,11 +62,13 @@ export function TranslationPage({ settings }: TranslationPageProps) {
       )}
 
       <div className="flex items-center gap-4">
-        <LanguageSelector
-          value={sourceLanguage}
-          onChange={setSourceLanguage}
-          label="From"
-        />
+        <div className="flex-1 flex justify-end">
+          <LanguageSelector
+            value={sourceLanguage}
+            onChange={setSourceLanguage}
+            label="From"
+          />
+        </div>
         <button
           onClick={handleSwap}
           className="mt-5 p-2 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800
@@ -82,11 +84,13 @@ export function TranslationPage({ settings }: TranslationPageProps) {
             />
           </svg>
         </button>
-        <LanguageSelector
-          value={targetLanguage}
-          onChange={setTargetLanguage}
-          label="To"
-        />
+        <div className="flex-1 flex justify-start">
+          <LanguageSelector
+            value={targetLanguage}
+            onChange={setTargetLanguage}
+            label="To"
+          />
+        </div>
       </div>
 
       <div className="flex flex-1 gap-4 min-h-0">
