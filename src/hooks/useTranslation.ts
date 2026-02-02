@@ -21,7 +21,7 @@ export function useTranslation() {
 
       const unlistenComplete = await listen<TranslationResponse>(
         "translation_complete",
-        (event) => {
+        () => {
           if (mounted) {
             setTranslating(false);
           }
