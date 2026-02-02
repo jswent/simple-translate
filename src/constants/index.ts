@@ -27,7 +27,7 @@ export const DEFAULT_SYSTEM_PROMPT = `You are an expert translator. Your goal is
 
 export const DEFAULT_SETTINGS: Settings = {
   api_key: "",
-  model: "gpt-5-mini-2025-08-07",
+  model: "gpt-4.1-mini",
   provider: "openai",
   system_prompt: DEFAULT_SYSTEM_PROMPT,
   default_source_language: "en",
@@ -35,7 +35,8 @@ export const DEFAULT_SETTINGS: Settings = {
 };
 
 export const AVAILABLE_MODELS = [
-  { id: "gpt-5-mini-2025-08-07", name: "GPT-5 Mini (Default)" },
-  { id: "gpt-4o", name: "GPT-4o" },
+  { id: "gpt-5.2", name: "GPT-5.2" },
+  { id: "gpt-4.1", name: "GPT-4.1" },
+  { id: "gpt-4.1-mini", name: "GPT-4.1 Mini" },
   { id: "gpt-4o-mini", name: "GPT-4o Mini" },
 ];
